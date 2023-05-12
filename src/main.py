@@ -3,3 +3,4 @@ from src.heap.heap import Heap
 
 ch = ConsoleHandler('./configuration/data.json')
 
+ch.run()
