@@ -1,4 +1,5 @@
 import json
+from curses.ascii import isalpha
 
 from src.heap.heap import Heap
 
@@ -20,12 +21,25 @@ class ConsoleHandler:
         self.heap = Heap(data_arr)
 
     def run(self):
-        heap_arr = self.intro()
+        running = True
+        while running:
+            heap_arr = self.intro()
+            if heap_arr == "exit":
+                break
+            elif heap_arr == "skip":
+                continue
+            print(f"heap from input is - {heap_arr}")
+            heap = Heap(heap_arr)
 
     @staticmethod
-    def intro() -> list:
-        print("Maman 13 - tom peleg 209626621\nwelcome to tom's amazing heap application")
-        numbers_str = input("Please enter a list of numbers separated by spaces to represent a heap: ")
+    def intro() -> list or str:
+        print("Maman 13 - tom peleg 209626621\nwelcome to tom's amazing heap application, you can make these actions:")
+        numbers_str = input("1. enter a list of numbers separated by spaces to represent a heap\n"
+                            "2. exit by entering exit()")
+        if numbers_str == "exit()":
+            return "exit()"
+        elif isalpha(numbers_str):
+            return "skip"
         numbers_list = numbers_str.split(" ")
         numbers = []
         for num_str in numbers_list:
