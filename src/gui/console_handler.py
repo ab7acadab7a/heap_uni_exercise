@@ -28,22 +28,36 @@ class ConsoleHandler:
             elif heap_arr == "skip":
                 print("did you mean to exit()?\n")
                 continue
-            print(f"heap from input is - {heap_arr}")
             heap = Heap(heap_arr)
+            print(f"heap from input is - {heap.heap}")
+            self.main_functions()
 
     def intro(self) -> list or str:
-        print("Maman 13 - tom peleg 209626621\nwelcome to tom's amazing heap application, you can make these actions:")
+        print("Maman 13 - tom peleg 209626621\n"
+              "welcome to tom's amazing heap application, input a number to make these actions:")
         input_response = input("1. enter a list of numbers separated by spaces to represent a heap\n"
-                               "2. exit by entering exit()\n")
+                               "2. exit\n")
         try:
-            return self.handle_intro_input(input_response)
+            if input_response == "1":
+                return self.handle_intro_input()
+            if input_response == "2":
+                return "exit()"
         except Exception as e:
             return "skip"
 
+    def main_functions(self):
+        action_num = input("here are the main functions you can do on this heap.\n"
+                           "enter the number of the command you want to execute:\n"
+                           "1. heapify\n"
+                           "2. heap_insert\n"
+                           "3. heap_extract_min\n"
+                           "4. heap_extract_max\n"
+                           "5. heap_delete\n"
+                           "6. exit\n")
+
     @staticmethod
-    def handle_intro_input(input_response: str) -> list or str:
-        if input_response == "exit()":
-            return "exit()"
+    def handle_intro_input() -> list or str:
+        input_response = input("please enter the numbers of the heap separated by spaces\n")
         numbers_list = input_response.split(" ")
         numbers = []
         for num_str in numbers_list:
