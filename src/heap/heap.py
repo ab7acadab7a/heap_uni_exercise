@@ -7,6 +7,7 @@ class Heap:
 
     def __init__(self, heap_arr: list):
         self.heap = heap_arr
+        self.heap_size = len(self.heap)
         self.build_heap()
 
     def build_heap(self):
@@ -14,37 +15,65 @@ class Heap:
         iterate the heap from the last item that is not at the last depth
         and start heapifing backwards
         """
-        heap_size = len(self.heap)
-        start = int(heap_size / 2) - 1  # first none last depth item
+        start = int(self.heap_size / 2) - 1  # first none last depth item
         for i in range(start, -1, -1):
             self.heapify(i)
             self.heapify(right(i))
             self.heapify(left(i))
 
+    def heap_insert(self):
+        pass
+
     def heap_extract_max(self) -> int or str:
         """
         :return: The biggest value in the heap if there are values in the heap
         """
-        found_value = self.heap[0] if len(self.heap) > 0 else "no values in heap"
-        print(f"found maximum value - {found_value}")
-        return found_value
+        if self.heap_size < 1:
+            return "no values in heap"
+
+        # get the biggest node
+        max_first_node = self.heap[0]
+
+        # swap the last item with the first and decrease size of heap
+        self.swap(0, self.heap_size - 1)
+        self.heap_size -= 1
+
+        # heapify the new item to it's right place if there is a heap still
+        if self.heap_size > 1:
+            self.heapify(0)
+
+        print(f"found minimum value - {max_first_node}")
+        return max_first_node
 
     def heap_extract_min(self) -> int or str:
         """
         :return: The biggest value in the heap if there are values in the heap
         """
+
+        minimum_index = 0
+
         # First value in the heap will be the biggest and smallest if its the only value
-        if len(self.heap) == 0:
-            found_value = "no values in heap"
-        elif len(self.heap) == 1:
-            found_value = self.heap[0]
+        if self.heap_size < 1:
+            return "no values in heap"
+        elif self.heap_size == 1:
+            minimum_index = 0
         # there is more then 1 value
         elif self.is_valid_index(2) and self.heap[1] > self.heap[2]:
-            found_value = self.heap[2]
+            minimum_index = 2
         else:
-            found_value = self.heap[1]
-        print(f"found minimum value - {found_value}")
-        return found_value
+            minimum_index = 1
+
+        minimum_node = self.heap[minimum_index]
+        self.swap(minimum_index, self.heap_size - 1)
+        # self.heap[minimum_index] = self.heap[self.heap_size - 1]
+        self.heap_size -= 1
+
+        # heapify the new item to it's right place if there is a heap still
+        if self.heap_size > 1:
+            self.heapify(minimum_index)
+
+        print(f"found minimum value - {minimum_node}")
+        return minimum_node
 
     def heapify(self, index: int) -> None:
         """
@@ -112,7 +141,7 @@ class Heap:
         :param index: Some index
         :return: Bool based on validity of index to the heap
         """
-        return index < len(self.heap)
+        return self.heap_size > index >= 0
 
     def full_family(self, index: int) -> list:
         """
@@ -148,7 +177,7 @@ class Heap:
         """
         Prints the elements of a heap in a tree-like format.
         """
-        n = len(self.heap)
+        n = self.heap_size
         max_level = (n - 2) // 2  # last level that is not a leaf
 
         # Determine the length of the largest number in the heap
