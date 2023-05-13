@@ -89,7 +89,7 @@ class Heap:
         :param index: Some index
         :return: Bool based on validity of index to the heap
         """
-        return index <= len(self.heap)
+        return index < len(self.heap)
 
     def possible_grandchildren(self, index: int) -> list:
         """
@@ -170,25 +170,27 @@ class Heap:
             # Since we are working with max_min heap we need to call the min heap on the next level
             self.max_heapify(smallest)
 
+
     def print_heap(self):
         """
         Prints the elements of a heap in a tree-like format.
         """
         n = len(self.heap)
+        max_level = (n - 2) // 2  # last level that is not a leaf
 
-        # last level that is not a leaf
-        max_level = (n - 2) // 2
+        # Determine the length of the largest number in the heap
+        max_length = len(str(max(self.heap)))
 
         # Print each level of the heap
         for level in range(max_level + 1):
             start = 2 ** level - 1  # index of first node in level
             end = min(start + 2 ** level, n)  # index of last node in level
-            spacing = 2 ** (max_level - level + 1) - 1  # spacing between nodes in level
+            spacing = 2 ** (max_level - level) - 1  # spacing between nodes in level
 
             # Print the nodes in the level
             for i in range(start, end):
-                print(" " * spacing, self.heap[i], end="")
-                spacing = 2 ** (max_level - level) - 1
+                node_str = str(self.heap[i]).center(max_length)
+                print(" " * (spacing * max_length), node_str, end="")
+                spacing = 2 ** (max_level - level + 1) - 1
 
             print()  # move to next line
-
