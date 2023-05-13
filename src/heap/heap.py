@@ -1,46 +1,10 @@
-import math
+from src.heap.heap_utilities import right, left, get_level
 
 
 class Heap:
 
     def __init__(self, heap_arr: list):
         self.heap = heap_arr
-
-    @staticmethod
-    def parent(index: int) -> int:
-        """
-        Get the index for the parent of the given index
-        :param index: a child value's index
-        :return: current index's parents index
-        """
-        return int((index + 1) / 2)
-
-    @staticmethod
-    def left(index: int) -> int:
-        """
-        Return the index of the left value to the given index
-        :param index: the current values index
-        :return: The index for the value to the left of the given index in the heap
-        """
-        return index * 2 + 1
-
-    @staticmethod
-    def right(index: int) -> int:
-        """
-        Return the index of the right value to the given index
-        :param index: the current values index
-        :return: The index for the value to the right of the given index in the heap
-        """
-        return (index + 1) * 2
-
-    @staticmethod
-    def get_level(index: int):
-        """
-        Get the level value of the given index
-        :param index: the index to calculate the level of
-        :return: the level of the given index
-        """
-        return int(math.log(index + 1, 2))
 
     def heap_extract_max(self):
         """
@@ -76,7 +40,7 @@ class Heap:
         if self.is_leaf(index):
             return
 
-        if self.get_level(index) % 2 == 0:
+        if get_level(index) % 2 == 0:
             self.max_heapify(index)
         else:
             self.min_heapify(index)
@@ -87,7 +51,7 @@ class Heap:
         :param index: the index to check
         :return: if the index is a leaf or not
         """
-        return self.right(index) > len(self.heap) and self.left(index) > len(self.heap)
+        return right(index) > len(self.heap) and left(index) > len(self.heap)
 
     def swap(self, index: int, swapped: int) -> None:
         """
