@@ -10,7 +10,7 @@ def load_json_configuration(path: str):
     :return: a list that will be the heap data
     """
     with open(path) as f:
-        return json.load(f)
+        return json.load(f)["heap_arr"]
 
 
 class ConsoleHandler:
@@ -30,7 +30,12 @@ class ConsoleHandler:
                 continue
             heap = Heap(heap_arr)
             print(f"heap from input is - {heap.heap}")
-            self.main_functions()
+            while running:
+                response = self.main_functions()
+                if response == "6":
+                    running = False
+                    break
+
 
     def intro(self) -> list or str:
         print("Maman 13 - tom peleg 209626621\n"
@@ -45,15 +50,16 @@ class ConsoleHandler:
         except Exception as e:
             return "skip"
 
-    def main_functions(self):
-        action_num = input("here are the main functions you can do on this heap.\n"
-                           "enter the number of the command you want to execute:\n"
-                           "1. heapify\n"
-                           "2. heap_insert\n"
-                           "3. heap_extract_min\n"
-                           "4. heap_extract_max\n"
-                           "5. heap_delete\n"
-                           "6. exit\n")
+    @staticmethod
+    def main_functions() -> str:
+        return input("here are the main functions you can do on this heap.\n"
+                     "enter the number of the command you want to execute:\n"
+                     "1. heapify\n"
+                     "2. heap_insert\n"
+                     "3. heap_extract_min\n"
+                     "4. heap_extract_max\n"
+                     "5. heap_delete\n"
+                     "6. exit\n")
 
     @staticmethod
     def handle_intro_input() -> list or str:

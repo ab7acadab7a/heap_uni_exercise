@@ -13,7 +13,7 @@ class Heap:
         :param index: a child value's index
         :return: current index's parents index
         """
-        return int(index / 2)
+        return int((index + 1) / 2)
 
     @staticmethod
     def left(index: int) -> int:
@@ -22,7 +22,7 @@ class Heap:
         :param index: the current values index
         :return: The index for the value to the left of the given index in the heap
         """
-        return index * 2
+        return index * 2 + 1
 
     @staticmethod
     def right(index: int) -> int:
@@ -31,7 +31,7 @@ class Heap:
         :param index: the current values index
         :return: The index for the value to the right of the given index in the heap
         """
-        return index * 2 + 1
+        return (index + 1) * 2
 
     @staticmethod
     def get_level(index: int):
@@ -40,27 +40,32 @@ class Heap:
         :param index: the index to calculate the level of
         :return: the level of the given index
         """
-        return int(math.log(index, 2))
+        return int(math.log(index + 1, 2))
 
     def heap_extract_max(self):
         """
         :return: The biggest value in the heap if there are values in the heap
         """
-        return self.heap[0] if len(self.heap) > 0 else "no values in heap"
+        found_value = self.heap[0] if len(self.heap) > 0 else "no values in heap"
+        print(f"found maximum value - {found_value}")
+        return found_value
 
-    def heap_extract_min(self):
+    def heap_extract_min(self) -> int or str:
         """
         :return: The biggest value in the heap if there are values in the heap
         """
         # First value in the heap will be the biggest and smallest if its the only value
         if len(self.heap) == 0:
-            return "no values in heap"
+            found_value = "no values in heap"
         elif len(self.heap) == 1:
-            return self.heap[0]
+            found_value = self.heap[0]
         # there is more then 1 value
-        if self.is_valid_index(2) and self.heap[1] > self.heap[2]:
-            return self.heap[2]
-        return self.heap[1]
+        elif self.is_valid_index(2) and self.heap[1] > self.heap[2]:
+            found_value = self.heap[2]
+        else:
+            found_value = self.heap[1]
+        print(f"found minimum value - {found_value}")
+        return found_value
 
     def heapify(self, index: int) -> None:
         """
@@ -134,7 +139,7 @@ class Heap:
         """
         Return the full children and grandchildren of a given index, while ignoring invalid indexes
         """
-        possible_indexes = [self.right(index), self.left(index)] + self.possible_grandchildren(index)
+        possible_indexes = [self.right(index), self.left(index), index] + self.possible_grandchildren(index)
 
         # Return the valid indexes out of the possible ones
         return [grandchild for grandchild in possible_indexes if self.is_valid_index(grandchild)]
@@ -181,7 +186,7 @@ class Heap:
         # left = self.left(index)
         # right = self.right(index)
 
-        largest = self.choose_heap_next_best_index(index, self.get_value)
+        smallest = self.choose_heap_next_best_index(index, self.get_value)
 
         # Check that left index is valid and bigger then current value
         # if self.max_heap_compare(index, left):
@@ -194,7 +199,26 @@ class Heap:
         #     largest = right
 
         # Check if heap is valid or not - meaning did some child happen to be bigger then current value
-        if largest != index:
-            self.swap(index, largest)
+        if smallest != index:
+            self.swap(index, smallest)
             # Since we are working with max_min heap we need to call the min heap on the next level
-            self.max_heapify(largest)
+            self.max_heapify(smallest)
+
+    def print_heap(self):
+        """
+        Prints the elements of a heap in a tree-like format.
+        """
+        n = len(self.heap)
+        max_level = (n - 2) // 2  # last level that is not a leaf
+
+        # Print each level of the heap
+        for level in range(max_level + 1):
+            start = 2 ** level - 1  # index of first node in level
+            end = min(start + 2 ** level, n)  # index of last node in level
+            spacing = 2 ** (max_level - level + 1) - 1  # spacing between nodes in level
+
+            # Print the nodes in the level
+            for i in range(start, end):
+                print(" " * spacing, self.heap[i], end="")
+                spacing = 2 ** (max_level - level + 2) - 1
+            print()  # move to next line
