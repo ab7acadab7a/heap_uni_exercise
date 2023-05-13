@@ -1,7 +1,7 @@
 import json
 import os.path
 
-from src.heap.heap import Heap
+from heap import Heap
 
 
 class ConsoleHandler:

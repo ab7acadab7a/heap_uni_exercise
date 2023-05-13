@@ -1,6 +1,4 @@
-import math
-
-from src.heap.heap_utilities import right, left, get_level, possible_grandchildren, parent
+from heap_utilities import right, left, get_level, possible_grandchildren, parent
 
 
 class Heap:
