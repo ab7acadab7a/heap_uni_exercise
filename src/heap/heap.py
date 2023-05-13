@@ -1,3 +1,5 @@
+import math
+
 from src.heap.heap_utilities import right, left, get_level
 
 
@@ -96,14 +98,14 @@ class Heap:
         :return: a list of the possible grandchildren indexes
         """
         # Get the possible grandchildren of the given index
-        return [self.right(self.right(index)), self.left(self.right(index)),
-                self.right(self.left(index)), self.left(self.left(index))]
+        return [right(right(index)), left(right(index)),
+                right(left(index)), left(left(index))]
 
     def full_family(self, index: int) -> list:
         """
         Return the full children and grandchildren of a given index, while ignoring invalid indexes
         """
-        possible_indexes = [self.right(index), self.left(index), index] + self.possible_grandchildren(index)
+        possible_indexes = [right(index), left(index), index] + self.possible_grandchildren(index)
 
         # Return the valid indexes out of the possible ones
         return [grandchild for grandchild in possible_indexes if self.is_valid_index(grandchild)]
@@ -118,7 +120,7 @@ class Heap:
         """
         possibles = self.full_family(index)
 
-        possibles.sort(key=compare, reverse=not self.get_level(index) % 2)
+        possibles.sort(key=compare, reverse=not get_level(index) % 2)
 
         # Get the first value
         return possibles[0]
@@ -173,7 +175,9 @@ class Heap:
         Prints the elements of a heap in a tree-like format.
         """
         n = len(self.heap)
-        max_level = (n - 2) // 2  # last level that is not a leaf
+
+        # last level that is not a leaf
+        max_level = (n - 2) // 2
 
         # Print each level of the heap
         for level in range(max_level + 1):
@@ -184,5 +188,7 @@ class Heap:
             # Print the nodes in the level
             for i in range(start, end):
                 print(" " * spacing, self.heap[i], end="")
-                spacing = 2 ** (max_level - level + 2) - 1
+                spacing = 2 ** (max_level - level) - 1
+
             print()  # move to next line
+
