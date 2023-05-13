@@ -1,6 +1,6 @@
 import math
 
-from src.heap.heap_utilities import right, left, get_level, possible_grandchildren
+from src.heap.heap_utilities import right, left, get_level, possible_grandchildren, parent
 
 
 class Heap:
@@ -21,8 +21,26 @@ class Heap:
             self.heapify(right(i))
             self.heapify(left(i))
 
-    def heap_insert(self):
-        pass
+    def heap_insert(self, value: int) -> None:
+        """
+        Insert the new value into the heap, in a way that corrosoponds to current size and actual size of the heap
+        :param value: the value to insert
+        """
+        # If the managed heap size is less than the actual size update the managed size
+        if self.heap_size < len(self.heap):
+            self.heap[self.heap_size] = value
+        else:
+            self.heap.append(value)
+
+        # Update the size
+        self.heap_size += 1
+
+        # Like build heap, heapify everything above the added node
+        index = self.heap_size - 1
+
+        while index >= 0:
+            self.heapify(parent(index))
+            index -= 1
 
     def heap_extract_max(self) -> int or str:
         """
@@ -31,49 +49,54 @@ class Heap:
         if self.heap_size < 1:
             return "no values in heap"
 
-        # get the biggest node
-        max_first_node = self.heap[0]
-
-        # swap the last item with the first and decrease size of heap
-        self.swap(0, self.heap_size - 1)
-        self.heap_size -= 1
-
-        # heapify the new item to it's right place if there is a heap still
-        if self.heap_size > 1:
-            self.heapify(0)
+        # Remove the First node and get its value
+        max_first_node = self.heap_delete(0)
 
         print(f"found minimum value - {max_first_node}")
         return max_first_node
 
     def heap_extract_min(self) -> int or str:
         """
-        :return: The biggest value in the heap if there are values in the heap
+        :return: The smallest value in the heap if there are values in the heap
         """
-
-        minimum_index = 0
 
         # First value in the heap will be the biggest and smallest if its the only value
         if self.heap_size < 1:
             return "no values in heap"
         elif self.heap_size == 1:
             minimum_index = 0
-        # there is more then 1 value
+        # There is more than 1 value
         elif self.is_valid_index(2) and self.heap[1] > self.heap[2]:
             minimum_index = 2
         else:
             minimum_index = 1
 
-        minimum_node = self.heap[minimum_index]
-        self.swap(minimum_index, self.heap_size - 1)
-        # self.heap[minimum_index] = self.heap[self.heap_size - 1]
-        self.heap_size -= 1
-
-        # heapify the new item to it's right place if there is a heap still
-        if self.heap_size > 1:
-            self.heapify(minimum_index)
+        minimum_node = self.heap_delete(minimum_index)
 
         print(f"found minimum value - {minimum_node}")
         return minimum_node
+
+    def heap_delete(self, index: int) -> int or str:
+        """
+        Delete the given index from the heap and return the value that was there
+        :param index: the index to delete
+        :return: the value in the index that was removed
+        """
+        if self.heap_size < 1:
+            return "heap is empty cant remove index from it"
+        elif index > self.heap_size - 1:
+            return "index not in heap cant be removed"
+        # Save the item to the side before removing
+        removed_item = self.heap[index]
+
+        # Swap the given index with the last index and decrease size of heap
+        self.swap(index, self.heap_size - 1)
+        self.heap_size -= 1
+
+        # Heapify the new item to it's right place if there is a heap still
+        if self.heap_size > 1:
+            self.heapify(index)
+        return removed_item
 
     def heapify(self, index: int) -> None:
         """
