@@ -89,8 +89,7 @@ class ConsoleHandler:
         try:
             numbers = json.loads(input_response)
             self.heap = Heap(numbers)
-            self.functions_menu = self.initialize_function_menu()
-            self.current_menu = self.functions_menu
+            self.switch_functions_menu()
         except Exception as e:
             print("didnt enter correct format, please try again and follow the format\n")
 
@@ -107,10 +106,13 @@ class ConsoleHandler:
         self.intro_function_menu = self.initialize_intro_menu()
         self.current_menu = self.intro_function_menu
 
+    def switch_functions_menu(self):
+        self.functions_menu = self.initialize_function_menu()
+        self.current_menu = self.functions_menu
+
     def load_json_configuration(self):
         """
         Load a configuration file that is of json type
-        :param path: the path for this file
         :return: a list that will be the heap data
         """
         file_input = input("please write the file name in relative path to /src file:\n")
@@ -118,6 +120,7 @@ class ConsoleHandler:
             with open(os.path.join(self.root_path, file_input)) as f:
                 self.heap = Heap(json.load(f))
                 print("successfully read from the given path")
+                self.switch_functions_menu()
         except FileNotFoundError as e:
             print(f"\n file {file_input} not found :( \n")
             return "skip"
