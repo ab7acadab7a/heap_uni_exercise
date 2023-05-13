@@ -9,6 +9,18 @@ class Heap:
         self.heap = heap_arr
         self.build_heap()
 
+    def build_heap(self):
+        """
+        iterate the heap from the last item that is not at the last depth
+        and start heapifing backwards
+        """
+        heap_size = len(self.heap)
+        start = int(heap_size / 2) - 1  # first none last depth item
+        for i in range(start, -1, -1):
+            self.heapify(i)
+            self.heapify(right(i))
+            self.heapify(left(i))
+
     def heap_extract_max(self) -> int or str:
         """
         :return: The biggest value in the heap if there are values in the heap
@@ -48,71 +60,6 @@ class Heap:
         else:
             self.min_heapify(index)
 
-    def is_leaf(self, index: int) -> bool:
-        """
-        Check if given index is a list in the heap
-        :param index: the index to check
-        :return: if the index is a leaf or not
-        """
-        return right(index) > len(self.heap) and left(index) > len(self.heap)
-
-    def swap(self, index: int, swapped: int) -> None:
-        """
-        Swap the values of the given indexes in inner eap
-        :param index: some legal index in the heap
-        :param swapped: some other legal index in the heap
-        """
-        temp_value = self.heap[index]
-        self.heap[index] = self.heap[swapped]
-        self.heap[swapped] = temp_value
-
-    def is_valid_index(self, index: int) -> bool:
-        """
-        Determine if a given index is a valid one based on the heap
-        :param index: Some index
-        :return: Bool based on validity of index to the heap
-        """
-        return index < len(self.heap)
-
-    def build_heap(self):
-        """
-        iterate the heap from the last item that is not at the last depth
-        and start heapifing backwards
-        """
-        heap_size = len(self.heap)
-        start = int(heap_size / 2) - 1  # first none last depth item
-        for i in range(start, -1, -1):
-            self.heapify(i)
-            self.heapify(right(i))
-            self.heapify(left(i))
-
-    def full_family(self, index: int) -> list:
-        """
-        Return the full children and grandchildren of a given index, while ignoring invalid indexes
-        """
-        possible_indexes = [right(index), left(index), index] + possible_grandchildren(index)
-
-        # Return the valid indexes out of the possible ones
-        return [grandchild for grandchild in possible_indexes if self.is_valid_index(grandchild)]
-
-    def choose_heap_next_best_index(self, index: int, compare) -> int:
-        """
-        This function takes an index and a function and chooses the next bext index based on the compare function
-        the options should be an index, its children and grandchildren
-        :param index: some index to check
-        :param compare: a compare function to check with between all the indexes
-        :return: the next best index based on the compare function
-        """
-        possibles = self.full_family(index)
-
-        possibles.sort(key=compare, reverse=not get_level(index) % 2)
-
-        # Get the first value
-        return possibles[0]
-
-    def get_value(self, index: int) -> int:
-        return self.heap[index]
-
     def max_heapify(self, index: int) -> None:
         """
         Max heapify the current index value according to the sub tree values,
@@ -140,6 +87,62 @@ class Heap:
             self.swap(index, smallest)
             # Since we are working with max_min heap we need to call the min heap on the next level
             self.heapify(smallest)
+
+    def is_leaf(self, index: int) -> bool:
+        """
+        Check if given index is a list in the heap
+        :param index: the index to check
+        :return: if the index is a leaf or not
+        """
+        return right(index) > len(self.heap) and left(index) > len(self.heap)
+
+    def swap(self, index: int, swapped: int) -> None:
+        """
+        Swap the values of the given indexes in inner eap
+        :param index: some legal index in the heap
+        :param swapped: some other legal index in the heap
+        """
+        temp_value = self.heap[index]
+        self.heap[index] = self.heap[swapped]
+        self.heap[swapped] = temp_value
+
+    def is_valid_index(self, index: int) -> bool:
+        """
+        Determine if a given index is a valid one based on the heap
+        :param index: Some index
+        :return: Bool based on validity of index to the heap
+        """
+        return index < len(self.heap)
+
+    def full_family(self, index: int) -> list:
+        """
+        Return the full children and grandchildren of a given index, while ignoring invalid indexes
+        """
+        possible_indexes = [right(index), left(index), index] + possible_grandchildren(index)
+
+        # Return the valid indexes out of the possible ones
+        return [grandchild for grandchild in possible_indexes if self.is_valid_index(grandchild)]
+
+    def choose_heap_next_best_index(self, index: int, compare) -> int:
+        """
+        This function takes an index and a function and chooses the next bext index based on the compare function
+        the options should be an index, its children and grandchildren
+        :param index: some index to check
+        :param compare: a compare function to check with between all the indexes
+        :return: the next best index based on the compare function
+        """
+        possibles = self.full_family(index)
+
+        possibles.sort(key=compare, reverse=not get_level(index) % 2)
+
+        # Get the first value
+        return possibles[0]
+
+    def get_value(self, index: int) -> int:
+        """
+        Based on the given index return the value for it from the heap
+        """
+        return self.heap[index]
 
     def print_heap(self):
         """
