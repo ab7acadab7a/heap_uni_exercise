@@ -68,10 +68,13 @@ class ConsoleHandler:
         print("Maman 13 - tom peleg 209626621\n"
               "welcome to tom's amazing heap application, input a number to make these actions:")
         while self.running:
-            self.print_current_menu()
-            input_response = self.await_selection_input()
-            if input_response == "skip": continue
-            self.current_menu[input_response][0]()
+            try:
+                self.print_current_menu()
+                input_response = self.await_selection_input()
+                if input_response == "skip": continue
+                self.current_menu[input_response][0]()
+            except Exception as e:
+                print("something went wrong ...")
 
     def await_selection_input(self):
         input_response = input("choose from the above:\n")
@@ -110,8 +113,8 @@ class ConsoleHandler:
         :param path: the path for this file
         :return: a list that will be the heap data
         """
+        file_input = input("please write the file name in relative path to /src file:\n")
         try:
-            file_input = input("please write the file name in relative path to /src file:\n")
             with open(os.path.join(self.root_path, file_input)) as f:
                 self.heap = Heap(json.load(f))
                 print("successfully read from the given path")
