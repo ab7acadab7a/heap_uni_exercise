@@ -9,7 +9,7 @@ class Heap:
         self.heap = heap_arr
         self.build_heap()
 
-    def heap_extract_max(self):
+    def heap_extract_max(self) -> int or str:
         """
         :return: The biggest value in the heap if there are values in the heap
         """
@@ -66,24 +66,6 @@ class Heap:
         self.heap[index] = self.heap[swapped]
         self.heap[swapped] = temp_value
 
-    def max_heap_compare(self, index: int, suspect: int) -> bool:
-        """
-        Function to compare 2 indexes that could be in the heap and return true if the suspect is bigger
-        :param index: some index
-        :param suspect: potential index to be bigger then the index
-        :return: true if the suspect index has a bigger value and is valid
-        """
-        return suspect <= len(self.heap) and self.heap[suspect] > self.heap[index]
-
-    def min_heap_compare(self, index: int, suspect: int) -> bool:
-        """
-        Function to compare 2 indexes that could be in the heap and return true if the suspect is smaller
-        :param index: some index
-        :param suspect: potential index to be smaller then the index
-        :return: true if the suspect index has a smaller value and is valid
-        """
-        return suspect <= len(self.heap) and self.heap[suspect] < self.heap[index]
-
     def is_valid_index(self, index: int) -> bool:
         """
         Determine if a given index is a valid one based on the heap
@@ -137,7 +119,6 @@ class Heap:
         Call when finished, because of the assignment call the min heapify function to handle next level heap
         :param index: some index
         """
-
         largest = self.choose_heap_next_best_index(index, self.get_value)
 
         # Check if heap is valid or not - meaning did some child happen to be bigger then current value
@@ -152,9 +133,6 @@ class Heap:
         Call when finished, because of the assignment call the min heapify function to handle next level heap
         :param index: some index
         """
-        # left = self.left(index)
-        # right = self.right(index)
-
         smallest = self.choose_heap_next_best_index(index, self.get_value)
 
         # Check if heap is valid or not - meaning did some child happen to be bigger then current value

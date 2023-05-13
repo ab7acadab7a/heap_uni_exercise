@@ -18,6 +18,17 @@ class ConsoleHandler:
     def __init__(self, path: str = None):
         data_arr = load_json_configuration(path)
         self.heap = Heap(data_arr)
+        self.initialize_function_menu()
+
+    def initialize_function_menu(self):
+        functions = {
+            "1": (lambda:self.heap.heapify()),
+            "2": (),
+            "3": (),
+            "4": (),
+            "5": (),
+            "6": (),
+        }
 
     def run(self):
         running = True
@@ -35,7 +46,6 @@ class ConsoleHandler:
                 if response == "6":
                     running = False
                     break
-
 
     def intro(self) -> list or str:
         print("Maman 13 - tom peleg 209626621\n"
