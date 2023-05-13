@@ -1,12 +1,13 @@
 import math
 
-from src.heap.heap_utilities import right, left, get_level
+from src.heap.heap_utilities import right, left, get_level, possible_grandchildren
 
 
 class Heap:
 
     def __init__(self, heap_arr: list):
         self.heap = heap_arr
+        self.build_heap()
 
     def heap_extract_max(self):
         """
@@ -91,21 +92,23 @@ class Heap:
         """
         return index < len(self.heap)
 
-    def possible_grandchildren(self, index: int) -> list:
+    def build_heap(self):
         """
-        Given an index return a list of the grandchildren
-        :param index: some valid index in the heap
-        :return: a list of the possible grandchildren indexes
+        iterate the heap from the last item that is not at the last depth
+        and start heapifing backwards
         """
-        # Get the possible grandchildren of the given index
-        return [right(right(index)), left(right(index)),
-                right(left(index)), left(left(index))]
+        heap_size = len(self.heap)
+        start = int(heap_size / 2) - 1  # first none last depth item
+        for i in range(start, -1, -1):
+            self.heapify(i)
+            self.heapify(right(i))
+            self.heapify(left(i))
 
     def full_family(self, index: int) -> list:
         """
         Return the full children and grandchildren of a given index, while ignoring invalid indexes
         """
-        possible_indexes = [right(index), left(index), index] + self.possible_grandchildren(index)
+        possible_indexes = [right(index), left(index), index] + possible_grandchildren(index)
 
         # Return the valid indexes out of the possible ones
         return [grandchild for grandchild in possible_indexes if self.is_valid_index(grandchild)]
@@ -141,7 +144,7 @@ class Heap:
         if largest != index:
             self.swap(index, largest)
             # Since we are working with max_min heap we need to call the min heap on the next level
-            self.min_heapify(largest)
+            self.heapify(largest)
 
     def min_heapify(self, index: int) -> None:
         """
@@ -154,22 +157,11 @@ class Heap:
 
         smallest = self.choose_heap_next_best_index(index, self.get_value)
 
-        # Check that left index is valid and bigger then current value
-        # if self.max_heap_compare(index, left):
-        #     largest = left
-        # else:
-        #     largest = index
-        #
-        # # Check if right index is valid and bigger then current value
-        # if self.max_heap_compare(largest, right):
-        #     largest = right
-
         # Check if heap is valid or not - meaning did some child happen to be bigger then current value
         if smallest != index:
             self.swap(index, smallest)
             # Since we are working with max_min heap we need to call the min heap on the next level
-            self.max_heapify(smallest)
-
+            self.heapify(smallest)
 
     def print_heap(self):
         """

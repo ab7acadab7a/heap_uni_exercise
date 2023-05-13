@@ -19,7 +19,6 @@ def left(index: int) -> int:
     return index * 2 + 1
 
 
-
 def right(index: int) -> int:
     """
     Return the index of the right value to the given index
@@ -27,6 +26,17 @@ def right(index: int) -> int:
     :return: The index for the value to the right of the given index in the heap
     """
     return (index + 1) * 2
+
+
+def possible_grandchildren(index: int) -> list:
+    """
+    Given an index return a list of the grandchildren
+    :param index: some valid index in the heap
+    :return: a list of the possible grandchildren indexes
+    """
+    # Get the possible grandchildren of the given index
+    return [right(right(index)), left(right(index)),
+            right(left(index)), left(left(index))]
 
 
 def get_level(index: int):
