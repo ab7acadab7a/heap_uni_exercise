@@ -8,7 +8,6 @@ class Heap:
     def __init__(self, heap_arr: list):
         self.heap = heap_arr
         self.heap_size = len(self.heap)
-        self.build_heap()
 
     def build_heap(self):
         """
@@ -200,8 +199,13 @@ class Heap:
         """
         Prints the elements of a heap in a tree-like format.
         """
-        n = self.heap_size
-        max_level = (n - 2) // 2  # last level that is not a leaf
+        if self.heap_size == 0:
+            print("empty heap")
+            return
+        elif self.heap_size == 1:
+            print(self.heap[0])
+            return
+        max_level = get_level(self.heap_size)  # last level that is not a leaf
 
         # Determine the length of the largest number in the heap
         max_length = len(str(max(self.heap)))
@@ -209,7 +213,7 @@ class Heap:
         # Print each level of the heap
         for level in range(max_level + 1):
             start = 2 ** level - 1  # index of first node in level
-            end = min(start + 2 ** level, n)  # index of last node in level
+            end = min(start + 2 ** level, self.heap_size)  # index of last node in level
             spacing = 2 ** (max_level - level) - 1  # spacing between nodes in level
 
             # Print the nodes in the level
